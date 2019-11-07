@@ -24,4 +24,20 @@ However there are 2 problems with this kind of progamming
 
 ## 4. Coroutines
 
+"A subroutine that can be paused and resumed"
+
+When do threads switch? Whenever a thread begins sleeping or awaiting network I/O, there is a chance for another thread to take the GIL and execute Python code. This is cooperative multitasking. CPython also has preemptive multitasking: If a thread runs uninterrupted for 1000 bytecode instructions in Python 2, or runs 15 milliseconds in Python 3, then it gives up the GIL and another thread may run. Think of this like time slicing in the olden days when we had many threads but one CPU
+
+#### With Coroutines,
 > It is possible to write asynchronous code that combines the efficiency of callbacks with the classic good looks of multithreaded programming. This combination is achieved with a pattern called "coroutines".
+> It is also scalable. Compared to the 50k of memory per thread and the operating system's hard limits on threads, a Python coroutine takes barely 3k of memory on Jesse's system. Python can easily start hundreds of thousands of coroutines
+> Whereas threads are preemptively multitasked by the operating system, coroutines multitask cooperatively: they choose when to pause, and which coroutine to run next.
+> Steps need no longer be scattered among callbacks; we gather them into the same generator function:
+
+####  The coroutines in the standard "asyncio" library in Python 3.4 are built upon generators, a Future class, and the "yield from" statement. 
+
+cf) A coroutine can delegate work to a sub-coroutine with `yield from` and receive the result of the work.
+
+## 5. asyncio Coroutines
+
+> We no longer need a fetcher class like we had in the callback-based program. That class was a workaround for a deficiency of callbacks: they need some place to store state while waiting for I/O, since their local variables are not preserved across calls. But the fetch coroutine can store its state in local variables like a regular function does, so there is no more need for a class
